@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://supercalc.com/sitemap.xml
+Sitemap: https://supercalc-dun.vercel.app/sitemap.xml

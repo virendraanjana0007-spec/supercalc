@@ -19,10 +19,17 @@ export const metadata: Metadata = {
   description: "Free online calculators for EMI, GST, BMI, Age, SIP, Loan, and 60+ more tools. Fast, accurate, and beautiful calculators for every need.",
   keywords: "calculator, online calculator, EMI calculator, GST calculator, BMI calculator, age calculator, finance tools, student tools",
   authors: [{ name: "SuperCalc" }],
+  verification: {
+    google: "baPv3Hywy3BPr3L4lF7G7vdZhVL5l3_XZKmaAPAhE_o",
+  },
   openGraph: {
     title: "SuperCalc - Free Online Calculators",
     description: "60+ Free Online Calculators for Every Need",
     type: "website",
+    url: "https://supercalc-dun.vercel.app/",
+  },
+  other: {
+    'google-site-verification': 'baPv3Hywy3BPr3L4lF7G7vdZhVL5l3_XZKmaAPAhE_o',
   },
 };
 
@@ -36,6 +43,23 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-0PS3WN2K75"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-0PS3WN2K75');
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-full flex flex-col bg-gradient-main">
         <Header />
         <main className="flex-1">{children}</main>

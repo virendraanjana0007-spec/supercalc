@@ -1,10 +1,12 @@
 import { getAllSlugs } from '@/lib/tools';
 
+const SITE_URL = 'https://supercalc-dun.vercel.app';
+
 export default async function sitemap() {
   const toolSlugs = getAllSlugs();
   
   const toolUrls = toolSlugs.map((slug) => ({
-    url: `https://supercalc.com/${slug}`,
+    url: `${SITE_URL}/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly',
     priority: 0.8,
@@ -12,25 +14,25 @@ export default async function sitemap() {
 
   const categoryUrls = [
     {
-      url: 'https://supercalc.com/finance-calculators',
+      url: `${SITE_URL}/finance-calculators`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://supercalc.com/student-tools',
+      url: `${SITE_URL}/student-tools`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://supercalc.com/health-fitness',
+      url: `${SITE_URL}/health-fitness`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: 'https://supercalc.com/unit-converters',
+      url: `${SITE_URL}/unit-converters`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -39,7 +41,7 @@ export default async function sitemap() {
 
   return [
     {
-      url: 'https://supercalc.com',
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1.0,
