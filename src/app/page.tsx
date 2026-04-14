@@ -1,65 +1,193 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { tools, categories, getToolsByCategory } from '@/lib/tools';
+import ToolCard from '@/components/UI/ToolCard';
+import AdSpace from '@/components/Layout/AdSpace';
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const filteredTools = tools.filter(tool => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         tool.keywords.some(k => k.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    const matchesCategory = !selectedCategory || tool.category === selectedCategory;
+    
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-5xl md:text-7xl font-bold mb-6 gradient-text">
+          SuperCalc
+        </h1>
+        <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto">
+          60+ Free Online Calculators for Every Need
+        </p>
+        <p className="text-lg text-gray-600 mb-12">
+          Finance, Health, Student Tools, Converters & More - Fast, Accurate & Beautiful
+        </p>
+
+        {/* Search Bar */}
+        <div className="max-w-2xl mx-auto mb-8">
+          <input
+            type="text"
+            placeholder="Search calculators... (e.g., EMI, GST, BMI)"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="input-3d text-lg"
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </motion.div>
+
+      {/* Category Filter */}
+      <div className="mb-12">
+        <div className="flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={() => setSelectedCategory(null)}
+            className={`px-6 py-3 rounded-full font-semibold transition-all ${
+              !selectedCategory
+                ? 'button-3d'
+                : 'bg-white hover:bg-gray-100 text-gray-700'
+            }`}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            All Tools
+          </button>
+          {categories.map((category) => (
+            <button
+              key={category.id}
+              onClick={() => setSelectedCategory(category.id)}
+              className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                selectedCategory === category.id
+                  ? 'button-3d'
+                  : 'bg-white hover:bg-gray-100 text-gray-700'
+              }`}
+            >
+              {category.icon} {category.name}
+            </button>
+          ))}
         </div>
-      </main>
+      </div>
+
+      {/* Ad Space */}
+      <AdSpace position="home-top" />
+
+      {/* Tools Grid */}
+      <div className="mb-12">
+        <h2 className="text-3xl font-bold mb-6 gradient-text">
+          {selectedCategory
+            ? categories.find(c => c.id === selectedCategory)?.name
+            : searchQuery
+            ? `Search Results for "${searchQuery}"`
+            : 'All Calculators'}
+        </h2>
+        
+        {filteredTools.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredTools.map((tool, index) => (
+              <motion.div
+                key={tool.slug}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <ToolCard
+                  slug={tool.slug}
+                  name={tool.name}
+                  description={tool.description}
+                  category={tool.category}
+                  icon={tool.icon}
+                />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <p className="text-2xl text-gray-600 mb-4">No calculators found</p>
+            <p className="text-gray-500">Try a different search term or category</p>
+          </div>
+        )}
+      </div>
+
+      {/* Category Sections */}
+      {!searchQuery && !selectedCategory && (
+        <>
+          {categories.map((category, index) => {
+            const categoryTools = getToolsByCategory(category.id);
+            if (categoryTools.length === 0) return null;
+
+            return (
+              <div key={category.id} className="mb-16">
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-4xl">{category.icon}</span>
+                  <h2 className="text-3xl font-bold gradient-text">
+                    {category.name}
+                  </h2>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {categoryTools.slice(0, 4).map((tool) => (
+                    <ToolCard
+                      key={tool.slug}
+                      slug={tool.slug}
+                      name={tool.name}
+                      description={tool.description}
+                      category={tool.category}
+                      icon={tool.icon}
+                    />
+                  ))}
+                </div>
+                {categoryTools.length > 4 && (
+                  <div className="text-center mt-6">
+                    <a
+                      href={`/${category.id === 'basic' ? 'basic-calculators' : category.id === 'finance' ? 'finance-calculators' : category.id === 'student' ? 'student-tools' : category.id === 'health' ? 'health-fitness' : category.id === 'converter' ? 'unit-converters' : category.id + '-tools'}`}
+                      className="button-3d inline-block"
+                    >
+                      View All {category.name} ({categoryTools.length})
+                    </a>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </>
+      )}
+
+      {/* Bottom Ad */}
+      <AdSpace position="home-bottom" />
+
+      {/* Why Choose Us */}
+      <div className="glass-card p-8 my-12">
+        <h2 className="text-3xl font-bold mb-8 text-center gradient-text">
+          Why Choose SuperCalc?
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="text-center">
+            <div className="text-5xl mb-4">⚡</div>
+            <h3 className="text-xl font-bold mb-2">Lightning Fast</h3>
+            <p className="text-gray-600">Get instant results with our optimized calculators</p>
+          </div>
+          <div className="text-center">
+            <div className="text-5xl mb-4">🎯</div>
+            <h3 className="text-xl font-bold mb-2">100% Accurate</h3>
+            <p className="text-gray-600">Precise calculations you can rely on</p>
+          </div>
+          <div className="text-center">
+            <div className="text-5xl mb-4">📱</div>
+            <h3 className="text-xl font-bold mb-2">Mobile Friendly</h3>
+            <p className="text-gray-600">Works perfectly on all devices</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
