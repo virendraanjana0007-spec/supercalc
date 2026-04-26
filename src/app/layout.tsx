@@ -30,6 +30,7 @@ export const metadata: Metadata = {
   },
   other: {
     'google-site-verification': 'baPv3Hywy3BPr3L4lF7G7vdZhVL5l3_XZKmaAPAhE_o',
+    'google-adsense-account': 'ca-pub-8857627341562937',
   },
 };
 
@@ -58,6 +59,13 @@ export default function RootLayout({
               gtag('config', 'G-0PS3WN2K75');
             `,
           }}
+        />
+        
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8857627341562937"
+          crossOrigin="anonymous"
         />
       </head>
       <body className="min-h-full flex flex-col bg-gradient-main">
