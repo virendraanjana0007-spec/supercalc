@@ -51,9 +51,13 @@ function getTitleForTool(toolName: string, slug: string, category: string): stri
   if (slug === 'percentage-calculator') {
     return `Percentage Calculator — X% of Y, Percent Formula Online Free | SuperCalc`;
   }
-  if (category === 'finance' || category === 'india') {
+  if (category === 'india') {
     return `${toolName} India 2026 — Free & Accurate | SuperCalc`;
   }
+  if (category === 'finance') {
+    return `${toolName} — Free Online Finance Calculator 2026 | SuperCalc`;
+  }
+
   if (category === 'health') {
     return `${toolName} — Free Online Health Calculator 2026 | SuperCalc`;
   }

@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
+import { getToolBySlug } from '@/lib/tools';
 
 // Import individual calculators
 const AgeCalculator = dynamic(() => import('./AgeCalculator'));
@@ -416,6 +417,10 @@ interface CalculatorLoaderProps {
 }
 
 export default function CalculatorLoader({ slug }: CalculatorLoaderProps) {
+  // Get tool details to determine category
+  const tool = getToolBySlug(slug);
+  const category = tool?.category;
+
   // Special calculators with custom components
   if (slug === 'age-calculator') {
     return (
@@ -435,10 +440,12 @@ export default function CalculatorLoader({ slug }: CalculatorLoaderProps) {
           fields={config.fields}
           calculate={config.calculate}
           resultLabels={config.resultLabels}
+          category={category}
         />
       </Suspense>
     );
   }
+
 
   return (
     <div className="text-center py-8 text-gray-600">

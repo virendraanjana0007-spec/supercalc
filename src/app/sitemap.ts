@@ -39,6 +39,33 @@ export default async function sitemap() {
     },
   ];
 
+  const staticUrls = [
+    {
+      url: `${SITE_URL}/about`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+    {
+      url: `${SITE_URL}/privacy-policy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
+      url: `${SITE_URL}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    },
+    {
+      url: `${SITE_URL}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    },
+  ];
+
   return [
     {
       url: SITE_URL,
@@ -47,6 +74,8 @@ export default async function sitemap() {
       priority: 1.0,
     },
     ...categoryUrls,
+    ...staticUrls,
     ...toolUrls,
   ];
 }
+
