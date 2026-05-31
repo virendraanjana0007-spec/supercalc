@@ -16,6 +16,50 @@ export async function generateStaticParams() {
   }));
 }
 
+// Per-category title templates for higher CTR
+function getTitleForTool(toolName: string, slug: string, category: string): string {
+  if (slug === 'percentage-change-calculator') {
+    return `Percentage Change Calculator — Instant % Increase/Decrease | SuperCalc`;
+  }
+  if (slug === 'emi-calculator') {
+    return `EMI Calculator India 2026 — Home, Car & Personal Loan | SuperCalc`;
+  }
+  if (slug === 'age-calculator') {
+    return `Age Calculator Online 2026 — Exact Age in Years, Months & Days | SuperCalc`;
+  }
+  if (slug === 'roi-calculator') {
+    return `ROI Calculator — Calculate Return on Investment Online Free | SuperCalc`;
+  }
+  if (slug === 'calorie-calculator') {
+    return `Calorie Calculator — Daily Calorie Needs for Weight Loss | SuperCalc`;
+  }
+  if (slug === 'fd-calculator') {
+    return `FD Calculator — Fixed Deposit Maturity & Interest Calculator | SuperCalc`;
+  }
+  if (slug === 'rd-calculator') {
+    return `RD Calculator — Recurring Deposit Maturity Amount Online | SuperCalc`;
+  }
+  if (slug === 'bmi-calculator') {
+    return `BMI Calculator 2026 — Check Body Mass Index Online Free | SuperCalc`;
+  }
+  if (slug === 'compound-interest-calculator') {
+    return `Compound Interest Calculator — Formula & Examples Online | SuperCalc`;
+  }
+  if (slug === 'sip-calculator') {
+    return `SIP Calculator India 2026 — Mutual Fund Returns Estimator | SuperCalc`;
+  }
+  if (slug === 'percentage-calculator') {
+    return `Percentage Calculator — X% of Y, Percent Formula Online Free | SuperCalc`;
+  }
+  if (category === 'finance' || category === 'india') {
+    return `${toolName} India 2026 — Free & Accurate | SuperCalc`;
+  }
+  if (category === 'health') {
+    return `${toolName} — Free Online Health Calculator 2026 | SuperCalc`;
+  }
+  return `${toolName} — Free Online Calculator 2026 | SuperCalc`;
+}
+
 // Generate metadata for SEO
 export async function generateMetadata({ params }: { params: Promise<{ 'tool-slug': string }> }): Promise<Metadata> {
   const resolvedParams = await params;
@@ -28,14 +72,26 @@ export async function generateMetadata({ params }: { params: Promise<{ 'tool-slu
     };
   }
 
+  const pageTitle = getTitleForTool(tool.name, slug, tool.category);
+  const canonicalUrl = `https://supercalc-dun.vercel.app/${slug}`;
+
   return {
-    title: `${tool.name} - Free Online Calculator 2026 | SuperCalc`,
+    title: pageTitle,
     description: tool.description,
     keywords: tool.keywords.join(', '),
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
-      title: `${tool.name} - Free Online Calculator 2026`,
+      title: pageTitle,
       description: tool.description,
       type: 'website',
+      url: canonicalUrl,
+    },
+    twitter: {
+      card: 'summary',
+      title: pageTitle,
+      description: tool.description,
     },
   };
 }
