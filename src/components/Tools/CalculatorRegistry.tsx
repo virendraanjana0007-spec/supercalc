@@ -19,7 +19,7 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'total', label: 'Total', type: 'number', placeholder: 'Enter total' },
     ],
     calculate: (values: any) => ({
-      percentage: ((values.value / values.total) * 100).toFixed(2),
+      percentage: values.total === 0 ? '0.00' : ((values.value / values.total) * 100).toFixed(2),
     }),
     resultLabels: ['Percentage (%)'],
   },
@@ -43,7 +43,7 @@ const calculatorConfigs: Record<string, any> = {
     ],
     calculate: (values: any) => {
       const diff = values.selling - values.cost;
-      const percent = (diff / values.cost) * 100;
+      const percent = values.cost === 0 ? 0 : (diff / values.cost) * 100;
       return {
         amount: Math.abs(diff).toFixed(2),
         percent: Math.abs(percent).toFixed(2),
@@ -110,9 +110,12 @@ const calculatorConfigs: Record<string, any> = {
     calculate: (values: any) => {
       const gcd = (x: number, y: number): number => y === 0 ? x : gcd(y, x % y);
       const divisor = gcd(values.a, values.b);
+      const simplifiedA = divisor === 0 ? 0 : values.a / divisor;
+      const simplifiedB = divisor === 0 ? 0 : values.b / divisor;
+      const decimalVal = values.b === 0 ? 0 : values.a / values.b;
       return {
-        ratio: `${values.a / divisor}:${values.b / divisor}`,
-        decimal: (values.a / values.b).toFixed(4),
+        ratio: `${simplifiedA}:${simplifiedB}`,
+        decimal: decimalVal.toFixed(4),
       };
     },
     resultLabels: ['Simplified Ratio', 'Decimal Value'],
@@ -127,8 +130,16 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'tenure', label: 'Loan Tenure (Years)', type: 'number', placeholder: 'Enter tenure in years' },
     ],
     calculate: (values: any) => {
-      const r = values.rate / 12 / 100;
       const n = values.tenure * 12;
+      if (values.rate === 0) {
+        const emi = values.principal / n;
+        return {
+          emi: emi.toFixed(2),
+          totalPayment: values.principal.toFixed(2),
+          totalInterest: '0.00',
+        };
+      }
+      const r = values.rate / 12 / 100;
       const emi = (values.principal * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
       const totalPayment = emi * n;
       const totalInterest = totalPayment - values.principal;
@@ -149,8 +160,15 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'tenure', label: 'Tenure (Years)', type: 'number', placeholder: 'Enter tenure' },
     ],
     calculate: (values: any) => {
-      const r = values.rate / 12 / 100;
       const n = values.tenure * 12;
+      if (values.rate === 0) {
+        const principal = values.emi * n;
+        return {
+          principal: principal.toFixed(2),
+          totalPayment: principal.toFixed(2),
+        };
+      }
+      const r = values.rate / 12 / 100;
       const principal = values.emi * (Math.pow(1 + r, n) - 1) / (r * Math.pow(1 + r, n));
       return {
         principal: principal.toFixed(2),
@@ -167,10 +185,17 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'years', label: 'Time Period (Years)', type: 'number', placeholder: 'Enter years' },
     ],
     calculate: (values: any) => {
-      const r = values.rate / 12 / 100;
       const n = values.years * 12;
-      const futureValue = values.monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
       const invested = values.monthly * n;
+      if (values.rate === 0) {
+        return {
+          invested: invested.toFixed(2),
+          gains: '0.00',
+          total: invested.toFixed(2),
+        };
+      }
+      const r = values.rate / 12 / 100;
+      const futureValue = values.monthly * ((Math.pow(1 + r, n) - 1) / r) * (1 + r);
       const gains = futureValue - invested;
       return {
         invested: invested.toFixed(2),
@@ -340,6 +365,9 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'years', label: 'Time Period (Years)', type: 'number', placeholder: 'Enter years' },
     ],
     calculate: (values: any) => {
+      if (values.beginning === 0 || values.years === 0) {
+        return { cagr: '0.00' };
+      }
       const cagr = (Math.pow(values.ending / values.beginning, 1 / values.years) - 1) * 100;
       return {
         cagr: cagr.toFixed(2),
@@ -354,6 +382,12 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'returned', label: 'Amount Returned (₹)', type: 'number', placeholder: 'Enter returned amount' },
     ],
     calculate: (values: any) => {
+      if (values.invested === 0) {
+        return {
+          roi: '0.00',
+          profit: (values.returned - values.invested).toFixed(2),
+        };
+      }
       const roi = ((values.returned - values.invested) / values.invested) * 100;
       return {
         roi: roi.toFixed(2),
@@ -369,6 +403,12 @@ const calculatorConfigs: Record<string, any> = {
       { name: 'new', label: 'New Value', type: 'number', placeholder: 'Enter new value' },
     ],
     calculate: (values: any) => {
+      if (values.old === 0) {
+        return {
+          change: '0.00',
+          type: 'No Change',
+        };
+      }
       const change = ((values.new - values.old) / values.old) * 100;
       return {
         change: change.toFixed(2),

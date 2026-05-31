@@ -14,7 +14,19 @@ export default async function sitemap() {
 
   const categoryUrls = [
     {
+      url: `${SITE_URL}/basic-calculators`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${SITE_URL}/finance-calculators`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/india-tools`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -32,12 +44,25 @@ export default async function sitemap() {
       priority: 0.7,
     },
     {
+      url: `${SITE_URL}/fun-tools`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: `${SITE_URL}/unit-converters`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    {
+      url: `${SITE_URL}/advanced-tools`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
   ];
+
 
   const staticUrls = [
     {
